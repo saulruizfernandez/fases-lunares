@@ -1,0 +1,214 @@
+import { useRef, useEffect } from "react";
+import * as THREE from "three";
+import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import { SunCalc } from "./suncalc.js";
+import {
+  Lensflare,
+  LensflareElement,
+} from "three/examples/jsm/objects/Lensflare";
+
+function ThreeComponent() {
+  const ref = useRef(null);
+
+  useEffect(() => {
+    // SCENE
+    const scene = new THREE.Scene();
+
+    // LIGHTS
+    const pointLight = new THREE.DirectionalLight(0xffffff, 100); // color blanco, intensidad 1, distancia 100
+    pointLight.castShadow = true;
+    scene.add(pointLight);
+    const textureLoader = new THREE.TextureLoader();
+
+    const textureFlare0 = textureLoader.load("/lensflare0.png");
+    const textureFlare1 = textureLoader.load("/lensflare2.png");
+    const textureFlare2 = textureLoader.load("/lensflare3.png");
+
+    const lensflare = new Lensflare();
+
+    lensflare.addElement(new LensflareElement(textureFlare0, 512, 0));
+    lensflare.addElement(new LensflareElement(textureFlare1, 512, 0));
+    lensflare.addElement(new LensflareElement(textureFlare2, 60, 0.6));
+
+    pointLight.add(lensflare);
+
+    // RENDERER
+    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.2;
+    renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.shadowMap.enabled = true;
+    document.body.appendChild(renderer.domElement);
+
+    // CAMERA MAIN
+    // 1 -> field of view in degrees
+    // 2 -> aspect ratio
+    // 3 and 4 -> min and max distance to the object in which it will be rendered (improve performance)
+    const camera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    const controls = new OrbitControls(camera, renderer.domElement);
+    camera.position.set(0, 0, 20);
+    controls.update();
+
+    // CAMERA LUNAR PHASE
+    const auxCamera = new THREE.PerspectiveCamera(
+      75,
+      window.innerWidth / window.innerHeight,
+      0.1,
+      1000
+    );
+    auxCamera.position.set(0, 0, 0);
+
+    // SKYBOX
+    new RGBELoader().load(
+      "/evening_road_01_puresky_4k.hdr",
+      function (texture) {
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        scene.background = texture;
+        scene.environment = texture;
+      }
+    );
+
+    // MOON 3D MODEL
+    var moon;
+    const loader_moon = new FBXLoader();
+    loader_moon.load(
+      "/moon.FBX",
+      function (object) {
+        moon = object;
+        object.scale.multiplyScalar(0.0088);
+        scene.add(object);
+      },
+      undefined,
+      function (error) {
+        // Check error while loading moon model
+        console.error(error);
+      }
+    );
+
+    /*
+// TERRAIN MODEL
+var terrain;
+const loader_terrain = new FBXLoader(loadingManager);
+loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
+  terrain = object;
+  object.scale.multiplyScalar(0.01);
+  scene.add(object);
+  terrain.receiveShadow = true;
+}, undefined, function (error) { // Check error while loading terrain model
+  console.error(error);
+});
+*/
+
+    // PLACE MOON AND SUN
+    function get_position(altitude, azimuth, distance) {
+      var position = new THREE.Vector3();
+      position.setY(Math.sin(altitude) * distance);
+      const radius = Math.sqrt(distance * distance - position.y * position.y);
+      if (azimuth > Math.PI / 2 && azimuth <= Math.PI) {
+        position.setX(-Math.cos(Math.PI - azimuth) * radius);
+        position.setZ(Math.sin(Math.PI - azimuth) * radius);
+      } else if (azimuth > Math.PI && azimuth <= (3 * Math.PI) / 2) {
+        position.setX(-Math.cos(azimuth - Math.PI) * radius);
+        position.setZ(-Math.sin(azimuth - Math.PI) * radius);
+      } else if (azimuth > (3 * Math.PI) / 2 && azimuth <= 2 * Math.PI) {
+        position.setX(Math.cos(2 * Math.PI - azimuth) * radius);
+        position.setZ(-Math.sin(2 * Math.PI - azimuth) * radius);
+      } else {
+        position.setX(Math.cos(azimuth) * radius);
+        position.setZ(Math.sin(azimuth) * radius);
+      }
+      return position;
+    }
+
+    //ASK FOR USER CURRENT LOCATION
+    let latitude = 0;
+    let longitude = 0;
+
+    // Get user's current location
+    navigator.geolocation.getCurrentPosition(function (position) {
+      latitude = position.coords.latitude;
+      longitude = position.coords.longitude;
+    });
+
+    // PLOT AXIS
+    const axesHelper = new THREE.AxesHelper(5);
+    scene.add(axesHelper);
+
+    function animate() {
+      requestAnimationFrame(animate);
+
+      const date = new Date();
+      var moon_position = SunCalc.getMoonPosition(date, latitude, longitude);
+      var new_position_moon = get_position(
+        moon_position.altitude,
+        moon_position.azimuth,
+        moon_position.distance / 15000
+      );
+      if (moon != undefined) {
+        moon.position.set(
+          new_position_moon.x,
+          new_position_moon.y,
+          new_position_moon.z
+        );
+        moon.lookAt(new THREE.Vector3(0, 0, 0));
+        auxCamera.fov = 2.5;
+        auxCamera.lookAt(moon.position);
+      }
+
+      var sun_position = SunCalc.getPosition(date, latitude, longitude);
+      var new_position_sun = get_position(
+        sun_position.altitude,
+        sun_position.azimuth,
+        100
+      );
+      pointLight.position.set(
+        new_position_sun.x,
+        new_position_sun.y,
+        new_position_sun.z
+      );
+      renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+      renderer.render(scene, camera);
+
+      // Light adjustment (day and night cycles)
+      renderer.toneMappingExposure =
+        (0.19 / 180) * (sun_position.altitude + 90) + 0.01;
+      pointLight.intensity =
+        700 - ((0.19 / 600) * (sun_position.altitude + 90) + 100);
+
+      const size_aux_camera = window.innerWidth / 5;
+      auxCamera.aspect = 1;
+      auxCamera.updateProjectionMatrix();
+      renderer.setScissor(
+        window.innerWidth - size_aux_camera,
+        0,
+        size_aux_camera,
+        size_aux_camera
+      );
+      renderer.setScissorTest(true);
+      renderer.setViewport(
+        window.innerWidth - size_aux_camera,
+        0,
+        size_aux_camera,
+        size_aux_camera
+      );
+      renderer.render(scene, auxCamera);
+
+      // Reset scissor test
+      renderer.setScissorTest(false);
+      renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+    }
+    animate();
+  }, []);
+
+  return <div ref={ref} />;
+}
+
+export default ThreeComponent;

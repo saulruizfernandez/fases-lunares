@@ -4,6 +4,7 @@ import ChartMoonAlt from "../chart/ChartMoonAlt";
 import ChartSunAlt from "../chart/ChartSunAlt";
 import MoonInfoCard from "../info-cards/MoonInfoCard";
 import SunInfoCard from "../info-cards/SunInfoCard";
+import ThreeComponent from "../../three-app/main_three";
 
 function GridThree() {
   return (
@@ -37,7 +38,9 @@ function GridThree() {
         container
         direction="column"
         justifyContent="flex-start"
-      ></Grid>
+      >
+        <ThreeComponent />
+      </Grid>
     </Grid>
   );
 }
