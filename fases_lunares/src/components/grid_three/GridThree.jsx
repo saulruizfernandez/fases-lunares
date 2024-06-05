@@ -1,6 +1,7 @@
 import Grid from "@mui/material/Grid";
 import PlayButton from "../play-button/PlayButton";
-import GridDemo from "../chart/ChartAltitude";
+import ChartMoonAlt from "../chart/ChartMoonAlt";
+import ChartSunAlt from "../chart/ChartSunAlt";
 
 function GridThree() {
   return (
@@ -13,10 +14,10 @@ function GridThree() {
         justifyContent="space-between"
       >
         <Grid item>
-          <GridDemo />
+          <ChartMoonAlt />
         </Grid>
         <Grid item>
-          <GridDemo />
+          <ChartSunAlt />
         </Grid>
         <Grid item>
           <PlayButton />
