@@ -15,8 +15,17 @@ import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
+import { ListItemIcon } from "@mui/material";
+import GitHubIcon from "@mui/icons-material/GitHub";
+import InfoIcon from "@mui/icons-material/Info";
+import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
+
 const drawerWidth = 240;
-const navItems = ["GitHub", "Help", "Contact"];
+const navItems = [
+  { text: "GitHub", icon: <GitHubIcon /> },
+  { text: "Mail", icon: <InfoIcon /> },
+  { text: "Inbox", icon: <PermContactCalendarIcon /> },
+];
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -34,9 +43,10 @@ function DrawerAppBar(props) {
       <Divider />
       <List>
         {navItems.map((item) => (
-          <ListItem key={item} disablePadding>
+          <ListItem key={item.text} disablePadding>
             <ListItemButton sx={{ textAlign: "center" }}>
-              <ListItemText primary={item} />
+              <ListItemIcon>{item.icon}</ListItemIcon>
+              <ListItemText primary={item.text} />
             </ListItemButton>
           </ListItem>
         ))}
@@ -70,8 +80,8 @@ function DrawerAppBar(props) {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button key={item} sx={{ color: "#fff" }}>
-                {item}
+              <Button key={item.text} sx={{ color: "#fff" }}>
+                {item.icon}
               </Button>
             ))}
           </Box>
