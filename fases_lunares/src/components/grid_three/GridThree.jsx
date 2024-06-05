@@ -2,6 +2,8 @@ import Grid from "@mui/material/Grid";
 import PlayButton from "../play-button/PlayButton";
 import ChartMoonAlt from "../chart/ChartMoonAlt";
 import ChartSunAlt from "../chart/ChartSunAlt";
+import MoonInfoCard from "../info-cards/MoonInfoCard";
+import SunInfoCard from "../info-cards/SunInfoCard";
 
 function GridThree() {
   return (
@@ -17,7 +19,13 @@ function GridThree() {
           <ChartMoonAlt />
         </Grid>
         <Grid item>
+          <MoonInfoCard />
+        </Grid>
+        <Grid item>
           <ChartSunAlt />
+        </Grid>
+        <Grid item>
+          <SunInfoCard />
         </Grid>
         <Grid item>
           <PlayButton />

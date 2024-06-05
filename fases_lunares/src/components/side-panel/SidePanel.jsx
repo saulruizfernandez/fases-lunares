@@ -8,6 +8,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
 import { sidepanelitems } from "./consts/sidepanelitems";
 import { Box } from "@mui/material";
+import { Fragment } from "react";
 
 function SidePanel() {
   const drawerWidth = 220;
@@ -29,23 +30,28 @@ function SidePanel() {
     >
       <Toolbar />
       <Divider
-        sx={{ backgroundColor: "white", height: "2px", marginTop: "20px" }}
+        sx={{ backgroundColor: "white", height: "3px", marginTop: "20px" }}
       />
       <Box sx={{ backgroundColor: "rgb(50, 50 , 50)" }}>
-        <List>
-          {sidepanelitems.map((text) => (
-            <ListItem key={text.id} disablePadding>
-              <ListItemButton>
-                <ListItemIcon sx={{ color: "rgb(240,240,240)" }}>
-                  {text.icon}
-                </ListItemIcon>
-                <ListItemText primary={text.label} />
-              </ListItemButton>
-            </ListItem>
+        <List sx={{ padding: 0 }}>
+          {sidepanelitems.map((text, index) => (
+            <Fragment key={text.id}>
+              <ListItem disablePadding>
+                <ListItemButton>
+                  <ListItemIcon sx={{ color: "rgb(240,240,240)" }}>
+                    {text.icon}
+                  </ListItemIcon>
+                  <ListItemText primary={text.label} />
+                </ListItemButton>
+              </ListItem>
+              {index < sidepanelitems.length - 1 && (
+                <Divider sx={{ backgroundColor: "white", height: "1px" }} />
+              )}
+            </Fragment>
           ))}
         </List>
       </Box>
-      <Divider sx={{ backgroundColor: "white", height: "2px" }} />
+      <Divider sx={{ backgroundColor: "white", height: "3px" }} />
     </Drawer>
   );
 }
