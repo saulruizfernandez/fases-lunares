@@ -6,8 +6,7 @@ import ListItem from "@mui/material/ListItem";
 import ListItemButton from "@mui/material/ListItemButton";
 import ListItemIcon from "@mui/material/ListItemIcon";
 import ListItemText from "@mui/material/ListItemText";
-import InboxIcon from "@mui/icons-material/MoveToInbox";
-import MailIcon from "@mui/icons-material/Mail";
+import { sidepanelitems } from "./consts/sidepanelitems";
 
 function SidePanel() {
   const drawerWidth = 220;
@@ -19,6 +18,9 @@ function SidePanel() {
         "& .MuiDrawer-paper": {
           width: drawerWidth,
           boxSizing: "border-box",
+          backgroundColor: "rgb(29,29,29)",
+          color: "rgb(240,240,240)",
+          zIndex: 1,
         },
       }}
       variant="permanent"
@@ -27,30 +29,18 @@ function SidePanel() {
       <Toolbar />
       <Divider />
       <List>
-        {["Inbox", "Starred", "Send email", "Drafts"].map((text, index) => (
-          <ListItem key={text} disablePadding>
+        {sidepanelitems.map((text) => (
+          <ListItem key={text.id} disablePadding>
             <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
+              <ListItemIcon sx={{ color: "rgb(240,240,240)" }}>
+                {text.icon}
               </ListItemIcon>
-              <ListItemText primary={text} />
+              <ListItemText primary={text.label} />
             </ListItemButton>
           </ListItem>
         ))}
       </List>
       <Divider />
-      <List>
-        {["All mail", "Trash", "Spam"].map((text, index) => (
-          <ListItem key={text} disablePadding>
-            <ListItemButton>
-              <ListItemIcon>
-                {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-              </ListItemIcon>
-              <ListItemText primary={text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
     </Drawer>
   );
 }
