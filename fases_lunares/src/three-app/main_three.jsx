@@ -36,12 +36,12 @@ function ThreeComponent() {
 
     // RENDERER
     const renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 0.2;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
-    document.body.appendChild(renderer.domElement);
+    ref.current.appendChild(renderer.domElement);
 
     // CAMERA MAIN
     // 1 -> field of view in degrees
@@ -49,7 +49,7 @@ function ThreeComponent() {
     // 3 and 4 -> min and max distance to the object in which it will be rendered (improve performance)
     const camera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      ref.current.clientWidth / ref.current.clientHeight,
       0.1,
       1000
     );
@@ -60,7 +60,7 @@ function ThreeComponent() {
     // CAMERA LUNAR PHASE
     const auxCamera = new THREE.PerspectiveCamera(
       75,
-      window.innerWidth / window.innerHeight,
+      ref.current.clientWidth / ref.current.clientHeight,
       0.1,
       1000
     );
@@ -75,6 +75,15 @@ function ThreeComponent() {
         scene.environment = texture;
       }
     );
+
+    // RESIZE LISTENER
+    const handleResize = () => {
+      renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
+      camera.aspect = ref.current.clientWidth / ref.current.clientHeight;
+      camera.updateProjectionMatrix();
+    };
+
+    window.addEventListener("resize", handleResize);
 
     // MOON 3D MODEL
     var moon;
@@ -174,7 +183,12 @@ loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
         new_position_sun.y,
         new_position_sun.z
       );
-      renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+      renderer.setViewport(
+        0,
+        0,
+        ref.current.clientWidth,
+        ref.current.clientHeight
+      );
       renderer.render(scene, camera);
 
       // Light adjustment (day and night cycles)
@@ -183,18 +197,18 @@ loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
       pointLight.intensity =
         700 - ((0.19 / 600) * (sun_position.altitude + 90) + 100);
 
-      const size_aux_camera = window.innerWidth / 5;
+      const size_aux_camera = ref.current.clientWidth / 5;
       auxCamera.aspect = 1;
       auxCamera.updateProjectionMatrix();
       renderer.setScissor(
-        window.innerWidth - size_aux_camera,
+        ref.current.clientWidth - size_aux_camera,
         0,
         size_aux_camera,
         size_aux_camera
       );
       renderer.setScissorTest(true);
       renderer.setViewport(
-        window.innerWidth - size_aux_camera,
+        ref.current.clientWidth - size_aux_camera,
         0,
         size_aux_camera,
         size_aux_camera
@@ -203,12 +217,23 @@ loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
 
       // Reset scissor test
       renderer.setScissorTest(false);
-      renderer.setViewport(0, 0, window.innerWidth, window.innerHeight);
+      renderer.setViewport(
+        0,
+        0,
+        ref.current.clientWidth,
+        ref.current.clientHeight
+      );
     }
     animate();
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener("resize", handleResize);
+      ref.current.removeChild(renderer.domElement);
+    };
   }, []);
 
-  return <div ref={ref} />;
+  return <div ref={ref} style={{ width: "100%", height: "100%" }} />;
 }
 
 export default ThreeComponent;
