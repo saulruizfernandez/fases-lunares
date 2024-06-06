@@ -16,7 +16,7 @@ export default function ChartMoonAlt() {
         {
           data: [2, 5.5, 2, 8.5, 1.5, 5],
           label: "Moon altitude (º)",
-          color: '#af7aa1',
+          color: "#af7aa1",
         },
       ]}
       height={200}

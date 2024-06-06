@@ -17,9 +17,9 @@ function ThreeComponent() {
     const scene = new THREE.Scene();
 
     // LIGHTS
-    const light = new THREE.AmbientLight( 0x404040, 3 ); // soft white light
-    scene.add( light );
-    
+    const light = new THREE.AmbientLight(0x404040, 3); // soft white light
+    scene.add(light);
+
     const pointLight = new THREE.DirectionalLight(0xffffff, 10); // color blanco, intensidad 1, distancia 100
     pointLight.castShadow = true;
     scene.add(pointLight);
@@ -68,16 +68,14 @@ function ThreeComponent() {
       1000
     );
     auxCamera.position.set(0, 0, 0);
+    auxCamera.zoom = 3;
 
     // SKYBOX
-    new RGBELoader().load(
-      "/stars.hdr",
-      function (texture) {
-        texture.mapping = THREE.EquirectangularReflectionMapping;
-        scene.background = texture;
-        scene.environment = texture;
-      }
-    );
+    new RGBELoader().load("/stars.hdr", function (texture) {
+      texture.mapping = THREE.EquirectangularReflectionMapping;
+      scene.background = texture;
+      scene.environment = texture;
+    });
 
     // RESIZE LISTENER
     const handleResize = () => {
@@ -92,10 +90,10 @@ function ThreeComponent() {
     var moon;
     const loader_moon = new FBXLoader();
     loader_moon.load(
-      "/moon.FBX",
+      "/moon.fbx",
       function (object) {
         moon = object;
-        object.scale.multiplyScalar(0.0088);
+        object.scale.multiplyScalar(0.008);
         scene.add(object);
       },
       undefined,
@@ -105,17 +103,23 @@ function ThreeComponent() {
       }
     );
 
-// TERRAIN MODEL
-var terrain;
-const loader_terrain = new FBXLoader();
-loader_terrain.load('/earth.fbx', function (object) {
-  terrain = object;
-  object.scale.multiplyScalar(0.01);
-  scene.add(object);
-  terrain.receiveShadow = true;
-}, undefined, function (error) { // Check error while loading terrain model
-  console.error(error);
-});
+    // TERRAIN MODEL
+    var terrain;
+    const loader_terrain = new FBXLoader();
+    loader_terrain.load(
+      "/earth.fbx",
+      function (object) {
+        terrain = object;
+        object.scale.multiplyScalar(0.013);
+        scene.add(object);
+        terrain.receiveShadow = true;
+      },
+      undefined,
+      function (error) {
+        // Check error while loading terrain model
+        console.error(error);
+      }
+    );
 
     // PLACE MOON AND SUN
     function get_position(altitude, azimuth, distance) {
@@ -156,11 +160,11 @@ loader_terrain.load('/earth.fbx', function (object) {
       requestAnimationFrame(animate);
 
       const date = new Date();
-      var moon_position = SunCalc.getMoonPosition(date, latitude, longitude);
+      var moon_position = SunCalc.getMoonPosition(date, 0.0001, 0);
       var new_position_moon = get_position(
         moon_position.altitude,
         moon_position.azimuth,
-        moon_position.distance / 15000
+        150.84
       );
       if (moon != undefined) {
         moon.position.set(
@@ -173,7 +177,7 @@ loader_terrain.load('/earth.fbx', function (object) {
         auxCamera.lookAt(moon.position);
       }
 
-      var sun_position = SunCalc.getPosition(date, latitude, longitude);
+      var sun_position = SunCalc.getPosition(date, 0.0001, 0);
       var new_position_sun = get_position(
         sun_position.altitude,
         sun_position.azimuth,
