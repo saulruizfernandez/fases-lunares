@@ -17,7 +17,7 @@ function ThreeComponent() {
     const scene = new THREE.Scene();
 
     // LIGHTS
-    const light = new THREE.AmbientLight(0x404040, 3); // soft white light
+    const light = new THREE.AmbientLight(0x404040, 5); // soft white light
     scene.add(light);
 
     const pointLight = new THREE.DirectionalLight(0xffffff, 10); // color blanco, intensidad 1, distancia 100
@@ -121,6 +121,13 @@ function ThreeComponent() {
       }
     );
 
+    // Rotate the Earth once in a fixed rotation
+    if (terrain != undefined) {
+      terrain.rotation.x = Math.PI / 2; // 90 degrees around the X-axis
+      terrain.rotation.y = Math.PI; // 180 degrees around the Y-axis
+      terrain.rotation.z = Math.PI / 6; // 30 degrees around the Z-axis
+    }
+
     // PLACE MOON AND SUN
     function get_position(altitude, azimuth, distance) {
       var position = new THREE.Vector3();
@@ -160,7 +167,7 @@ function ThreeComponent() {
       requestAnimationFrame(animate);
 
       const date = new Date();
-      var moon_position = SunCalc.getMoonPosition(date, 0.0001, 0);
+      var moon_position = SunCalc.getMoonPosition(date, 89.9999, -90);
       var new_position_moon = get_position(
         moon_position.altitude,
         moon_position.azimuth,
@@ -177,7 +184,11 @@ function ThreeComponent() {
         auxCamera.lookAt(moon.position);
       }
 
-      var sun_position = SunCalc.getPosition(date, 0.0001, 0);
+      if (terrain != undefined) {
+        terrain.rotation.y = Math.PI / 2;
+      }
+
+      var sun_position = SunCalc.getPosition(date, 89.9999, -90);
       var new_position_sun = get_position(
         sun_position.altitude,
         sun_position.azimuth,
