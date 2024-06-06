@@ -17,7 +17,10 @@ function ThreeComponent() {
     const scene = new THREE.Scene();
 
     // LIGHTS
-    const pointLight = new THREE.DirectionalLight(0xffffff, 100); // color blanco, intensidad 1, distancia 100
+    const light = new THREE.AmbientLight( 0x404040, 3 ); // soft white light
+    scene.add( light );
+    
+    const pointLight = new THREE.DirectionalLight(0xffffff, 10); // color blanco, intensidad 1, distancia 100
     pointLight.castShadow = true;
     scene.add(pointLight);
     const textureLoader = new THREE.TextureLoader();
@@ -38,7 +41,7 @@ function ThreeComponent() {
     const renderer = new THREE.WebGLRenderer({ alpha: true });
     renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
-    renderer.toneMappingExposure = 0.2;
+    renderer.toneMappingExposure = 2;
     renderer.outputEncoding = THREE.sRGBEncoding;
     renderer.shadowMap.enabled = true;
     ref.current.appendChild(renderer.domElement);
@@ -68,7 +71,7 @@ function ThreeComponent() {
 
     // SKYBOX
     new RGBELoader().load(
-      "/evening_road_01_puresky_4k.hdr",
+      "/stars.hdr",
       function (texture) {
         texture.mapping = THREE.EquirectangularReflectionMapping;
         scene.background = texture;
@@ -102,11 +105,10 @@ function ThreeComponent() {
       }
     );
 
-    /*
 // TERRAIN MODEL
 var terrain;
-const loader_terrain = new FBXLoader(loadingManager);
-loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
+const loader_terrain = new FBXLoader();
+loader_terrain.load('/earth.fbx', function (object) {
   terrain = object;
   object.scale.multiplyScalar(0.01);
   scene.add(object);
@@ -114,7 +116,6 @@ loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
 }, undefined, function (error) { // Check error while loading terrain model
   console.error(error);
 });
-*/
 
     // PLACE MOON AND SUN
     function get_position(altitude, azimuth, distance) {
@@ -190,12 +191,6 @@ loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
         ref.current.clientHeight
       );
       renderer.render(scene, camera);
-
-      // Light adjustment (day and night cycles)
-      renderer.toneMappingExposure =
-        (0.19 / 180) * (sun_position.altitude + 90) + 0.01;
-      pointLight.intensity =
-        700 - ((0.19 / 600) * (sun_position.altitude + 90) + 100);
 
       const size_aux_camera = ref.current.clientWidth / 5;
       auxCamera.aspect = 1;

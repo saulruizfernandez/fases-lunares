@@ -8,7 +8,7 @@ import ThreeComponent from "../../three-app/main_three";
 
 function GridThree() {
   return (
-    <Grid container height="100%">
+    <Grid container height="100%" spacing={2}>
       <Grid
         item
         xs={4}
