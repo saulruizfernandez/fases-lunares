@@ -225,7 +225,7 @@ loader_terrain.load('../terreno_fases_lunares.fbx', function (object) {
       );
     }
     animate();
-    
+
     // Cleanup
     return () => {
       window.removeEventListener("resize", handleResize);
