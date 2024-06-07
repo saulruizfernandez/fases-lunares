@@ -165,14 +165,14 @@ function ThreeComponent() {
       const date = new Date();
 
       // AJUSTE POR HUSO HORARIO
-      date.setHours(date.getHours() + 0);
+      date.setHours(date.getHours());
       console.log(date);
 
       var moon_position = SunCalc.getMoonPosition(date, 89.9999, 0);
       var new_position_moon = get_position(
         moon_position.altitude,
         moon_position.azimuth,
-        384400
+        120.672
       );
       if (moon != undefined) {
         moon.position.set(
@@ -207,7 +207,7 @@ function ThreeComponent() {
       var new_position_sun = get_position(
         sun_position.altitude,
         sun_position.azimuth,
-        100
+        180
       );
       pointLight.position.set(
         new_position_sun.x,
