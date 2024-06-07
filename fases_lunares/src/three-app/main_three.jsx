@@ -1,7 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
-import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { SunCalc } from "./suncalc.js";
 import {
@@ -18,10 +17,10 @@ function ThreeComponent() {
     scene.background = new THREE.Color(0x000000);
 
     // LIGHTS
-    const light = new THREE.AmbientLight(0x404040, 5); // soft white light
+    const light = new THREE.AmbientLight(0x404040, 4);
     scene.add(light);
 
-    const pointLight = new THREE.DirectionalLight(0xffffff, 10); // color blanco, intensidad 1, distancia 100
+    const pointLight = new THREE.DirectionalLight(0xffffff, 10);
     pointLight.castShadow = true;
     scene.add(pointLight);
     const textureLoader = new THREE.TextureLoader();
@@ -72,15 +71,8 @@ function ThreeComponent() {
       1000
     );
     auxCamera.position.set(0, 0, 0);
-    auxCamera.zoom = 3;
-    /*
-    // SKYBOX
-    new RGBELoader().load("/stars.hdr", function (texture) {
-      texture.mapping = THREE.EquirectangularReflectionMapping;
-      scene.background = texture;
-      scene.environment = texture;
-    });
-*/
+    auxCamera.zoom = 0.05;
+
     // RESIZE LISTENER
     const handleResize = () => {
       renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
@@ -137,17 +129,18 @@ function ThreeComponent() {
       position.setY(Math.sin(altitude) * distance);
       const radius = Math.sqrt(distance * distance - position.y * position.y);
       if (azimuth > Math.PI / 2 && azimuth <= Math.PI) {
-        position.setX(-Math.cos(Math.PI - azimuth) * radius);
-        position.setZ(Math.sin(Math.PI - azimuth) * radius);
+        position.setX(+Math.sin(Math.PI - azimuth) * radius);
+        position.setZ(+Math.cos(Math.PI - azimuth) * radius);
       } else if (azimuth > Math.PI && azimuth <= (3 * Math.PI) / 2) {
-        position.setX(-Math.cos(azimuth - Math.PI) * radius);
-        position.setZ(-Math.sin(azimuth - Math.PI) * radius);
+        position.setX(-Math.sin(azimuth - Math.PI) * radius);
+        position.setZ(+Math.cos(azimuth - Math.PI) * radius);
       } else if (azimuth > (3 * Math.PI) / 2 && azimuth <= 2 * Math.PI) {
-        position.setX(Math.cos(2 * Math.PI - azimuth) * radius);
-        position.setZ(-Math.sin(2 * Math.PI - azimuth) * radius);
+        position.setX(-Math.sin(2 * Math.PI - azimuth) * radius);
+        position.setZ(-Math.cos(2 * Math.PI - azimuth) * radius);
       } else {
-        position.setX(Math.cos(azimuth) * radius);
-        position.setZ(Math.sin(azimuth) * radius);
+        // está comprobado -> (0º - 90º)
+        position.setX(+Math.sin(azimuth) * radius);
+        position.setZ(-Math.cos(azimuth) * radius);
       }
       return position;
     }
@@ -170,11 +163,16 @@ function ThreeComponent() {
       requestAnimationFrame(animate);
 
       const date = new Date();
-      var moon_position = SunCalc.getMoonPosition(date, 89.9999, -90);
+
+      // AJUSTE POR HUSO HORARIO
+      date.setHours(date.getHours() + 0);
+      console.log(date);
+
+      var moon_position = SunCalc.getMoonPosition(date, 89.9999, 0);
       var new_position_moon = get_position(
         moon_position.altitude,
         moon_position.azimuth,
-        150.84
+        384400
       );
       if (moon != undefined) {
         moon.position.set(
@@ -184,6 +182,20 @@ function ThreeComponent() {
         );
         moon.lookAt(new THREE.Vector3(0, 0, 0));
         auxCamera.fov = 2.5;
+
+        // PLACE AUXILIARY CAMERA
+
+        // Create vector from moon to earth by substracting positions
+        let vector_earth_moon = new THREE.Vector3(0, 0, 0).sub(moon.position);
+        // Normalize the vector so that it has length 1
+        vector_earth_moon.normalize();
+        // Multiply the vector by a number (distancia of the aux camera to the moon)
+        vector_earth_moon.multiplyScalar(3);
+        // Calculate the new camera position
+        var cameraPosition = moon.position.clone().add(vector_earth_moon);
+        // Set the camera position
+        auxCamera.position.copy(cameraPosition);
+
         auxCamera.lookAt(moon.position);
       }
 
@@ -191,7 +203,7 @@ function ThreeComponent() {
         terrain.rotation.y = Math.PI / 2;
       }
 
-      var sun_position = SunCalc.getPosition(date, 89.9999, -90);
+      var sun_position = SunCalc.getPosition(date, 89.9999, 0);
       var new_position_sun = get_position(
         sun_position.altitude,
         sun_position.azimuth,
