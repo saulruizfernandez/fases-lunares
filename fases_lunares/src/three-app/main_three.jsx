@@ -1,6 +1,6 @@
 import { useRef, useEffect } from "react";
 import * as THREE from "three";
-import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { RGBELoader } from "three/examples/jsm/loaders/RGBELoader";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { SunCalc } from "./suncalc.js";
@@ -14,7 +14,8 @@ function ThreeComponent() {
 
   useEffect(() => {
     // SCENE
-    const scene = new THREE.Scene();
+    let scene = new THREE.Scene();
+    scene.background = new THREE.Color(0x000000);
 
     // LIGHTS
     const light = new THREE.AmbientLight(0x404040, 5); // soft white light
@@ -38,7 +39,10 @@ function ThreeComponent() {
     pointLight.add(lensflare);
 
     // RENDERER
-    const renderer = new THREE.WebGLRenderer({ alpha: true });
+    const renderer = new THREE.WebGLRenderer({
+      alpha: true,
+      powerPreference: "high-performance",
+    });
     renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
     renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 2;
@@ -69,14 +73,14 @@ function ThreeComponent() {
     );
     auxCamera.position.set(0, 0, 0);
     auxCamera.zoom = 3;
-
+    /*
     // SKYBOX
     new RGBELoader().load("/stars.hdr", function (texture) {
       texture.mapping = THREE.EquirectangularReflectionMapping;
       scene.background = texture;
       scene.environment = texture;
     });
-
+*/
     // RESIZE LISTENER
     const handleResize = () => {
       renderer.setSize(ref.current.clientWidth, ref.current.clientHeight);
@@ -88,13 +92,13 @@ function ThreeComponent() {
 
     // MOON 3D MODEL
     var moon;
-    const loader_moon = new FBXLoader();
+    const loader_moon = new GLTFLoader();
     loader_moon.load(
-      "/moon.fbx",
+      "/moon.glb",
       function (object) {
-        moon = object;
-        object.scale.multiplyScalar(0.008);
-        scene.add(object);
+        moon = object.scene;
+        object.scene.scale.multiplyScalar(1);
+        scene.add(object.scene);
       },
       undefined,
       function (error) {
@@ -105,14 +109,13 @@ function ThreeComponent() {
 
     // TERRAIN MODEL
     var terrain;
-    const loader_terrain = new FBXLoader();
+    const loader_terrain = new GLTFLoader();
     loader_terrain.load(
-      "/earth.fbx",
+      "/earth.glb",
       function (object) {
-        terrain = object;
-        object.scale.multiplyScalar(0.013);
-        scene.add(object);
-        terrain.receiveShadow = true;
+        terrain = object.scene;
+        object.scene.scale.multiplyScalar(1);
+        scene.add(object.scene);
       },
       undefined,
       function (error) {
