@@ -7,6 +7,7 @@ import {
   Lensflare,
   LensflareElement,
 } from "three/examples/jsm/objects/Lensflare";
+import { changeFlagAcceleration, getFlagAcceleration } from "./variables.js";
 
 function ThreeComponent() {
   const ref = useRef(null);
@@ -71,7 +72,7 @@ function ThreeComponent() {
       1000
     );
     auxCamera.position.set(0, 0, 0);
-    auxCamera.zoom = 0.05;
+    auxCamera.zoom = 1;
 
     // RESIZE LISTENER
     const handleResize = () => {
@@ -159,16 +160,26 @@ function ThreeComponent() {
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
+    let timeScale = 10000;
+    let startTime = Date.now();
+    let acceleratedTime;
+    if (!getFlagAcceleration()) {
+      acceleratedTime = new Date();
+      console.log("correcto");
+    }
+
     function animate() {
       requestAnimationFrame(animate);
 
-      const date = new Date();
+      // TIME ACCELERATION
+      if (getFlagAcceleration()) {
+        let timeElapsed = (Date.now() - startTime) / 1000 / 60 / 60;
+        acceleratedTime = new Date(
+          startTime + timeElapsed * timeScale * 60 * 60 * 1000
+        );
+      }
 
-      // AJUSTE POR HUSO HORARIO
-      date.setHours(date.getHours());
-      console.log(date);
-
-      var moon_position = SunCalc.getMoonPosition(date, 89.9999, 0);
+      var moon_position = SunCalc.getMoonPosition(acceleratedTime, 89.9999, 0);
       var new_position_moon = get_position(
         moon_position.altitude,
         moon_position.azimuth,
@@ -190,7 +201,7 @@ function ThreeComponent() {
         // Normalize the vector so that it has length 1
         vector_earth_moon.normalize();
         // Multiply the vector by a number (distancia of the aux camera to the moon)
-        vector_earth_moon.multiplyScalar(3);
+        vector_earth_moon.multiplyScalar(60);
         // Calculate the new camera position
         var cameraPosition = moon.position.clone().add(vector_earth_moon);
         // Set the camera position
@@ -203,7 +214,7 @@ function ThreeComponent() {
         terrain.rotation.y = Math.PI / 2;
       }
 
-      var sun_position = SunCalc.getPosition(date, 89.9999, 0);
+      var sun_position = SunCalc.getPosition(acceleratedTime, 89.9999, 0);
       var new_position_sun = get_position(
         sun_position.altitude,
         sun_position.azimuth,
