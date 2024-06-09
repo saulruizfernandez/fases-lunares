@@ -7,7 +7,7 @@ import {
   Lensflare,
   LensflareElement,
 } from "three/examples/jsm/objects/Lensflare";
-import { changeFlagAcceleration, getFlagAcceleration } from "./variables.js";
+import { getFlagAcceleration } from "./variables.js";
 
 function ThreeComponent() {
   const ref = useRef(null);
@@ -18,7 +18,7 @@ function ThreeComponent() {
     scene.background = new THREE.Color(0x000000);
 
     // LIGHTS
-    const light = new THREE.AmbientLight(0x404040, 4);
+    const light = new THREE.AmbientLight(0x404040, 7);
     scene.add(light);
 
     const pointLight = new THREE.DirectionalLight(0xffffff, 10);
@@ -117,13 +117,6 @@ function ThreeComponent() {
       }
     );
 
-    // Rotate the Earth once in a fixed rotation
-    if (terrain != undefined) {
-      terrain.rotation.x = Math.PI / 2; // 90 degrees around the X-axis
-      terrain.rotation.y = Math.PI; // 180 degrees around the Y-axis
-      terrain.rotation.z = Math.PI / 6; // 30 degrees around the Z-axis
-    }
-
     // PLACE MOON AND SUN
     function get_position(altitude, azimuth, distance) {
       var position = new THREE.Vector3();
@@ -210,10 +203,6 @@ function ThreeComponent() {
         auxCamera.lookAt(moon.position);
       }
 
-      if (terrain != undefined) {
-        terrain.rotation.y = Math.PI / 2;
-      }
-
       var sun_position = SunCalc.getPosition(acceleratedTime, 89.9999, 0);
       var new_position_sun = get_position(
         sun_position.altitude,
@@ -259,6 +248,14 @@ function ThreeComponent() {
         ref.current.clientWidth,
         ref.current.clientHeight
       );
+
+      var moonIllumination = SunCalc.getMoonIllumination(acceleratedTime);
+      // var moonPhase = moonIllumination.phase;
+      var moonFraction = moonIllumination.fraction;
+
+      document.getElementById("moon-info").textContent = `${(
+        moonFraction * 100
+      ).toFixed(2)}%`;
     }
     animate();
 
@@ -269,7 +266,23 @@ function ThreeComponent() {
     };
   }, []);
 
-  return <div ref={ref} style={{ width: "100%", height: "100%" }} />;
+  return (
+    <div
+      ref={ref}
+      style={{ width: "100%", height: "100%", position: "relative" }}
+    >
+      <div
+        id="moon-info"
+        style={{
+          position: "absolute",
+          bottom: 85,
+          right: 55,
+          color: "#88EFFF",
+          fontSize: "30px",
+        }}
+      ></div>
+    </div>
+  );
 }
 
 export default ThreeComponent;
