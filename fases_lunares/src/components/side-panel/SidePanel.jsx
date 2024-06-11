@@ -17,6 +17,9 @@ import DialogActions from "@mui/material/DialogActions";
 import BasicDatePicker from "./BasicDatePicker";
 import BasicTimePicker from "./BasicTimePicker";
 
+import TextField from "@mui/material/TextField";
+import BasicSelect from "./BasicSelect";
+
 function SidePanel() {
   const [dateOpen, setDateOpen] = React.useState(false);
 
@@ -36,6 +39,26 @@ function SidePanel() {
 
   const handlerTimeClose = () => {
     setTimeOpen(false);
+  };
+
+  const [locOpen, setLocOpen] = React.useState(false);
+
+  const handlerLocClickOpen = () => {
+    setLocOpen(true);
+  };
+
+  const handlerLocClose = () => {
+    setLocOpen(false);
+  };
+
+  const [zoneOpen, setZoneOpen] = React.useState(false);
+
+  const handlerZoneClickOpen = () => {
+    setZoneOpen(true);
+  };
+
+  const handlerZoneClose = () => {
+    setZoneOpen(false);
   };
 
   const drawerWidth = 220;
@@ -70,6 +93,10 @@ function SidePanel() {
                       handlerTimeClickOpen();
                     } else if (text.label == "Date") {
                       handlerDateClickOpen();
+                    } else if (text.label == "Location") {
+                      handlerLocClickOpen();
+                    } else if (text.label == "Timezone") {
+                      handlerZoneClickOpen();
                     }
                   }}
                   sx={{
@@ -91,10 +118,10 @@ function SidePanel() {
         <DialogTitle>Date picker</DialogTitle>
         <DialogContent>
           Select a date by clicking on the date-picker
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <BasicDatePicker />
+          </Box>
         </DialogContent>
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <BasicDatePicker />
-        </Box>
         <DialogActions>
           <Button onClick={handlerDateClose}>Close</Button>
         </DialogActions>
@@ -104,14 +131,59 @@ function SidePanel() {
         <DialogTitle>Time picker</DialogTitle>
         <DialogContent>
           Select a time by clicking on the time-picker
+          <Box display="flex" justifyContent="center" alignItems="center">
+            <BasicTimePicker />
+          </Box>
         </DialogContent>
-        <Box display="flex" justifyContent="center" alignItems="center">
-          <BasicTimePicker />
-        </Box>
         <DialogActions>
           <Button onClick={handlerTimeClose}>Close</Button>
         </DialogActions>
       </Dialog>
+
+      <Dialog open={locOpen} onClose={handlerLocClose}>
+        <DialogTitle>Location</DialogTitle>
+        <DialogContent>
+          Input any location in decimal notation, remember south latitude is
+          negative, and west longitude is also negative
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="lat"
+            label="Latitude (e.g. -23.5738º)"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+          <TextField
+            autoFocus
+            required
+            margin="dense"
+            id="name"
+            name="lon"
+            label="Longitude (e.g. 175.2275º)"
+            type="email"
+            fullWidth
+            variant="standard"
+          />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlerLocClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={zoneOpen} onClose={handlerZoneClose}>
+        <DialogTitle>Timezone</DialogTitle>
+        <DialogContent>
+          Select a timezone
+          <BasicSelect />
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handlerZoneClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
       <Divider sx={{ backgroundColor: "white", height: "3px" }} />
     </Drawer>
   );
