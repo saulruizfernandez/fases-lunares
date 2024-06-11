@@ -13,17 +13,29 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+
 import BasicDatePicker from "./BasicDatePicker";
+import BasicTimePicker from "./BasicTimePicker";
 
 function SidePanel() {
-  const [open, setOpen] = React.useState(false);
+  const [dateOpen, setDateOpen] = React.useState(false);
 
-  const handleClickOpen = () => {
-    setOpen(true);
+  const handlerDateClickOpen = () => {
+    setDateOpen(true);
   };
 
-  const handleClose = () => {
-    setOpen(false);
+  const handlerDateClose = () => {
+    setDateOpen(false);
+  };
+
+  const [timeOpen, setTimeOpen] = React.useState(false);
+
+  const handlerTimeClickOpen = () => {
+    setTimeOpen(true);
+  };
+
+  const handlerTimeClose = () => {
+    setTimeOpen(false);
   };
 
   const drawerWidth = 220;
@@ -53,7 +65,13 @@ function SidePanel() {
             <Fragment key={text.id}>
               <ListItem disablePadding>
                 <Button
-                  onClick={handleClickOpen}
+                  onClick={() => {
+                    if (text.label == "Time") {
+                      handlerTimeClickOpen();
+                    } else if (text.label == "Date") {
+                      handlerDateClickOpen();
+                    }
+                  }}
                   sx={{
                     justifyContent: "flex-start",
                     color: "rgb(240,240,240)",
@@ -69,7 +87,7 @@ function SidePanel() {
           ))}
         </List>
       </Box>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={dateOpen} onClose={handlerDateClose}>
         <DialogTitle>Date picker</DialogTitle>
         <DialogContent>
           Select a date by clicking on the date-picker
@@ -78,7 +96,20 @@ function SidePanel() {
           <BasicDatePicker />
         </Box>
         <DialogActions>
-          <Button onClick={handleClose}>Close</Button>
+          <Button onClick={handlerDateClose}>Close</Button>
+        </DialogActions>
+      </Dialog>
+
+      <Dialog open={timeOpen} onClose={handlerTimeClose}>
+        <DialogTitle>Time picker</DialogTitle>
+        <DialogContent>
+          Select a time by clicking on the time-picker
+        </DialogContent>
+        <Box display="flex" justifyContent="center" alignItems="center">
+          <BasicTimePicker />
+        </Box>
+        <DialogActions>
+          <Button onClick={handlerTimeClose}>Close</Button>
         </DialogActions>
       </Dialog>
       <Divider sx={{ backgroundColor: "white", height: "3px" }} />
