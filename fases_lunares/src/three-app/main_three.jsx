@@ -159,6 +159,7 @@ function ThreeComponent() {
     if (!getFlagAcceleration()) {
       acceleratedTime = new Date();
       console.log("correcto");
+      console.log(acceleratedTime);
     }
 
     function animate() {
@@ -275,10 +276,11 @@ function ThreeComponent() {
         id="moon-info"
         style={{
           position: "absolute",
-          bottom: 85,
-          right: 55,
-          color: "#88EFFF",
+          bottom: "10%",
+          right: "5%",
+          color: "#FF0B67",
           fontSize: "30px",
+          fontWeight: "bold",
         }}
       ></div>
     </div>
