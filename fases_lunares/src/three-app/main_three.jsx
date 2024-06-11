@@ -139,16 +139,6 @@ function ThreeComponent() {
       return position;
     }
 
-    //ASK FOR USER CURRENT LOCATION
-    let latitude = 0;
-    let longitude = 0;
-
-    // Get user's current location
-    navigator.geolocation.getCurrentPosition(function (position) {
-      latitude = position.coords.latitude;
-      longitude = position.coords.longitude;
-    });
-
     // PLOT AXIS
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);

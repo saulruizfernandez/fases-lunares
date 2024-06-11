@@ -20,6 +20,21 @@ import BasicTimePicker from "./BasicTimePicker";
 import TextField from "@mui/material/TextField";
 import BasicSelect from "./BasicSelect";
 
+import tz_lookup from "tz-lookup";
+
+//ASK FOR USER CURRENT LOCATION
+let latitude = 0;
+let longitude = 0;
+
+// Get user's current location
+navigator.geolocation.getCurrentPosition(function (position) {
+  latitude = position.coords.latitude.toFixed(4);
+  longitude = position.coords.longitude.toFixed(4);
+  console.log(latitude);
+  console.log(longitude);
+  console.log(tz_lookup(latitude, longitude));
+});
+
 function SidePanel() {
   const [dateOpen, setDateOpen] = React.useState(false);
 
@@ -155,6 +170,7 @@ function SidePanel() {
             type="email"
             fullWidth
             variant="standard"
+            value={latitude}
           />
           <TextField
             autoFocus
@@ -166,6 +182,7 @@ function SidePanel() {
             type="email"
             fullWidth
             variant="standard"
+            value={longitude}
           />
         </DialogContent>
         <DialogActions>

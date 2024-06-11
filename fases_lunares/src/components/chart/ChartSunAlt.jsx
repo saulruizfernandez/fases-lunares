@@ -1,4 +1,20 @@
 import { LineChart } from "@mui/x-charts/LineChart";
+import SunCalc from "suncalc";
+
+// Calculations for sun altitude in all the day
+let sun_alt = [];
+
+let date_prov = new Date();
+date_prov.setHours(1, 0, 0, 0);
+
+for (let i = 0; i < 24; ++i) {
+  sun_alt.push(SunCalc.getPosition(date_prov, 31.0, 28.1));
+  date_prov.setHours(date_prov.getHours() + 1);
+}
+
+let date_ahora = new Date();
+date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
+let sol_ahora = SunCalc.getPosition(date_ahora, 31.0, 28.1);
 
 export default function ChartSunAlt() {
   return (
@@ -6,17 +22,31 @@ export default function ChartSunAlt() {
       xAxis={[
         {
           data: [
-            1, 2, 3, 5, 8, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22,
-            23, 24,
+            1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19,
+            20, 21, 22, 23, 24,
           ],
           label: "time (HH)",
         },
       ]}
       series={[
         {
-          data: [2, 5.5, 2, 8.5, 1.5, 5],
+          data: sun_alt.map((position) => (position.altitude * 180) / Math.PI),
           label: "Sun altitude (º)",
-          color: '#f28e2c',
+          color: "#f28e2c",
+          showMark: false,
+        },
+        {
+          data: Array.from({ length: 24 }, () => 0),
+          color: "red",
+          showMark: false,
+        },
+        {
+          data: Array.from({ length: 24 }, (v, i) =>
+            i === date_ahora.getHours() - 1
+              ? (sol_ahora.altitude * 180) / Math.PI
+              : null
+          ),
+          color: "black",
         },
       ]}
       height={200}

@@ -17,10 +17,15 @@
     "@mui/lab": "^5.0.0-alpha.170",
     "@mui/material": "^5.15.19",
     "@mui/x-date-pickers": "^7.6.2",
+    "browser-geo-tz": "^0.1.0",
+    "d3": "^7.9.0",
     "dayjs": "^1.11.11",
+    "geo-tz": "^8.0.2",
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "suncalc": "^1.9.0",
+    "tz-lookup": "^6.1.25"
   },
   "devDependencies": {
     "@types/react": "^18.2.66",
