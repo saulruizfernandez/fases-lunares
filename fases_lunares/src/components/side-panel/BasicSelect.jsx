@@ -4,13 +4,16 @@ import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
+import moment from "moment-timezone";
 
 export default function BasicSelect() {
-  const [timezone, setTimezone] = React.useState("");
+  const [timezone, setTimezone] = React.useState(moment.tz.guess());
 
   const handleChange = (event) => {
     setTimezone(event.target.value);
   };
+
+  const timezones = moment.tz.names();
 
   return (
     <Box sx={{ minWidth: 120 }}>
@@ -20,34 +23,13 @@ export default function BasicSelect() {
           labelId="demo-simple-select-label"
           id="demo-simple-select"
           value={timezone}
-          label="Timezone"
           onChange={handleChange}
         >
-          <MenuItem value={-12}>-12</MenuItem>
-          <MenuItem value={-11}>-11</MenuItem>
-          <MenuItem value={-10}>-10</MenuItem>
-          <MenuItem value={-9}>-9</MenuItem>
-          <MenuItem value={-8}>-8</MenuItem>
-          <MenuItem value={-7}>-7</MenuItem>
-          <MenuItem value={-6}>-6</MenuItem>
-          <MenuItem value={-5}>-5</MenuItem>
-          <MenuItem value={-4}>-4</MenuItem>
-          <MenuItem value={-3}>-3</MenuItem>
-          <MenuItem value={-2}>-2</MenuItem>
-          <MenuItem value={-1}>-1</MenuItem>
-          <MenuItem value={0}>0</MenuItem>
-          <MenuItem value={1}>1</MenuItem>
-          <MenuItem value={2}>2</MenuItem>
-          <MenuItem value={3}>3</MenuItem>
-          <MenuItem value={4}>4</MenuItem>
-          <MenuItem value={5}>5</MenuItem>
-          <MenuItem value={6}>6</MenuItem>
-          <MenuItem value={7}>7</MenuItem>
-          <MenuItem value={8}>8</MenuItem>
-          <MenuItem value={9}>9</MenuItem>
-          <MenuItem value={10}>10</MenuItem>
-          <MenuItem value={11}>11</MenuItem>
-          <MenuItem value={12}>12</MenuItem>
+          {timezones.map((zone) => (
+            <MenuItem key={zone} value={zone}>
+              {zone}
+            </MenuItem>
+          ))}
         </Select>
       </FormControl>
     </Box>
