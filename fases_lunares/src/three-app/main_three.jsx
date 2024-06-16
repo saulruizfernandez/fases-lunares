@@ -18,10 +18,10 @@ function ThreeComponent() {
     scene.background = new THREE.Color(0x000000);
 
     // LIGHTS
-    const light = new THREE.AmbientLight(0x404040, 7);
+    const light = new THREE.AmbientLight(0x404040, 2);
     scene.add(light);
 
-    const pointLight = new THREE.DirectionalLight(0xffffff, 10);
+    const pointLight = new THREE.DirectionalLight(0xffffff, 4);
     pointLight.castShadow = true;
     scene.add(pointLight);
     const textureLoader = new THREE.TextureLoader();
@@ -145,12 +145,7 @@ function ThreeComponent() {
 
     let timeScale = 10000;
     let startTime = Date.now();
-    let acceleratedTime;
-    if (!getFlagAcceleration()) {
-      acceleratedTime = new Date();
-      console.log("correcto");
-      console.log(acceleratedTime);
-    }
+    let acceleratedTime = new Date();
 
     function animate() {
       requestAnimationFrame(animate);
@@ -177,6 +172,10 @@ function ThreeComponent() {
         );
         moon.lookAt(new THREE.Vector3(0, 0, 0));
         auxCamera.fov = 2.5;
+
+        if (terrain != undefined) {
+          terrain.rotation.y = Math.PI / 2;
+        }
 
         // PLACE AUXILIARY CAMERA
 

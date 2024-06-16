@@ -20,7 +20,10 @@ import BasicTimePicker from "./BasicTimePicker";
 import TextField from "@mui/material/TextField";
 import BasicSelect from "./BasicSelect";
 
-import tz_lookup from "tz-lookup";
+import AccessTimeIcon from "@mui/icons-material/AccessTime";
+import EventIcon from "@mui/icons-material/Event";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PublicIcon from "@mui/icons-material/Public";
 
 //ASK FOR USER CURRENT LOCATION
 let latitude = 0;
@@ -30,9 +33,6 @@ let longitude = 0;
 navigator.geolocation.getCurrentPosition(function (position) {
   latitude = position.coords.latitude.toFixed(4);
   longitude = position.coords.longitude.toFixed(4);
-  console.log(latitude);
-  console.log(longitude);
-  console.log(tz_lookup(latitude, longitude));
 });
 
 function SidePanel() {
@@ -99,27 +99,34 @@ function SidePanel() {
       />
       <Box sx={{ backgroundColor: "rgb(50, 50 , 50)" }}>
         <List sx={{ padding: 0 }}>
-          {sidepanelitems.map((text, index) => (
-            <Fragment key={text.id}>
-              <ListItem disablePadding>
+          {sidepanelitems.map((item, index) => (
+            <Fragment key={item.id}>
+              <ListItem
+                disablePadding
+                sx={{ width: "100%" }} // Asegura que ListItem ocupe todo el espacio
+                onClick={() => {
+                  if (item.label == "Time") {
+                    handlerTimeClickOpen();
+                  } else if (item.label == "Date") {
+                    handlerDateClickOpen();
+                  } else if (item.label == "Location") {
+                    handlerLocClickOpen();
+                  } else if (item.label == "Timezone") {
+                    handlerZoneClickOpen();
+                  }
+                }}
+              >
                 <Button
-                  onClick={() => {
-                    if (text.label == "Time") {
-                      handlerTimeClickOpen();
-                    } else if (text.label == "Date") {
-                      handlerDateClickOpen();
-                    } else if (text.label == "Location") {
-                      handlerLocClickOpen();
-                    } else if (text.label == "Timezone") {
-                      handlerZoneClickOpen();
-                    }
-                  }}
                   sx={{
                     justifyContent: "flex-start",
                     color: "rgb(240,240,240)",
+                    textTransform: "none",
+                    width: "100%", // Hace que el botón ocupe todo el espacio de ListItem
                   }}
+                  startIcon={item.icon}
+                  fullWidth // Hace que el botón se expanda para llenar el ListItem
                 >
-                  {text.label}
+                  {item.label}
                 </Button>
               </ListItem>
               {index < sidepanelitems.length - 1 && (

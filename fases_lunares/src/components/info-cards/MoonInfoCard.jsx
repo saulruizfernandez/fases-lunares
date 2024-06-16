@@ -3,6 +3,10 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
+import SunCalc from "suncalc";
+
+let moonProps = SunCalc.getMoonTimes(new Date(), 31.0, 28.1);
+let moonPos = SunCalc.getMoonPosition(new Date(), 31.0, 28.1);
 
 export default function MoonInfoCard() {
   return (
@@ -25,19 +29,53 @@ export default function MoonInfoCard() {
             gutterBottom
             variant="h5"
             component="div"
-            sx={{ color: "rgb(240,240,240)" }}
+            sx={{
+              color: "rgb(240,240,240)",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
           >
             Moon
           </Typography>
-          <Typography variant="body1" color="rgb(200,200,200)">
-            Alt/Az:
+          <Typography
+            variant="body1"
+            color="rgb(200,200,200)"
+            style={{
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+              textOverflow: "ellipsis",
+            }}
+          >
+            Alt/Az: {((moonPos.altitude * 180) / Math.PI).toFixed(4)}º,{" "}
+            {((moonPos.azimuth * 180) / Math.PI).toFixed(4)}º
           </Typography>
-          <Typography variant="body1" color="rgb(200,200,200)">
-            Moonrise:
-          </Typography>
-          <Typography variant="body1" color="rgb(200,200,200)">
-            Moonset:
-          </Typography>
+          {moonProps.rise && (
+            <Typography
+              variant="body1"
+              color="rgb(200,200,200)"
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              Moonrise: {moonProps.rise.toLocaleTimeString()}
+            </Typography>
+          )}
+          {moonProps.set && (
+            <Typography
+              variant="body1"
+              color="rgb(200,200,200)"
+              style={{
+                whiteSpace: "nowrap",
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
+              Moonset: {moonProps.set.toLocaleTimeString()}
+            </Typography>
+          )}
         </CardContent>
       </CardActionArea>
     </Card>
