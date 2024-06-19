@@ -22,6 +22,8 @@ import BasicSelect from "./BasicSelect";
 
 import dayjs from "dayjs";
 
+import moment from "moment-timezone";
+
 //ASK FOR USER CURRENT LOCATION
 let latitude = 0;
 let longitude = 0;
@@ -33,6 +35,7 @@ navigator.geolocation.getCurrentPosition(function (position) {
 });
 
 function SidePanel() {
+  // DATE PICKER
   const [dateOpen, setDateOpen] = React.useState(false);
   const [actualDate, setActualDate] = React.useState(dayjs());
 
@@ -48,6 +51,7 @@ function SidePanel() {
     setActualDate(newActualDate);
   };
 
+  // TIME PICKER
   const [timeOpen, setTimeOpen] = React.useState(false);
 
   const handlerTimeClickOpen = () => {
@@ -58,6 +62,7 @@ function SidePanel() {
     setTimeOpen(false);
   };
 
+  // SELECT LOCATION
   const [locOpen, setLocOpen] = React.useState(false);
 
   const handlerLocClickOpen = () => {
@@ -68,7 +73,11 @@ function SidePanel() {
     setLocOpen(false);
   };
 
+  // SELECT TIMEZONE
   const [zoneOpen, setZoneOpen] = React.useState(false);
+  const [timeZone, setTimeZone] = React.useState(moment.tz.guess());
+  console.log("holi");
+  console.log(timeZone);
 
   const handlerZoneClickOpen = () => {
     setZoneOpen(true);
@@ -76,6 +85,10 @@ function SidePanel() {
 
   const handlerZoneClose = () => {
     setZoneOpen(false);
+  };
+
+  const handleZoneChange = (event) => {
+    setTimeZone(event.target.value);
   };
 
   const drawerWidth = 220;
@@ -203,7 +216,7 @@ function SidePanel() {
         <DialogTitle>Timezone</DialogTitle>
         <DialogContent>
           Select a timezone
-          <BasicSelect />
+          <BasicSelect timezone={timeZone} handleChange={handleZoneChange} />
         </DialogContent>
         <DialogActions>
           <Button onClick={handlerZoneClose}>Close</Button>

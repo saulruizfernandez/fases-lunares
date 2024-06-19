@@ -1,4 +1,5 @@
-import * as React from "react";
+// import * as React from "react";
+import PropTypes from "prop-types";
 import Box from "@mui/material/Box";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
@@ -6,12 +7,12 @@ import FormControl from "@mui/material/FormControl";
 import Select from "@mui/material/Select";
 import moment from "moment-timezone";
 
-export default function BasicSelect() {
-  const [timezone, setTimezone] = React.useState(moment.tz.guess());
+function BasicSelect({ timezone, handleChange }) {
+  // const [timezone, setTimezone] = React.useState(moment.tz.guess());
 
-  const handleChange = (event) => {
-    setTimezone(event.target.value);
-  };
+  // const handleChange = (event) => {
+  //   setTimezone(event.target.value);
+  // };
 
   const timezones = moment.tz.names();
 
@@ -35,3 +36,10 @@ export default function BasicSelect() {
     </Box>
   );
 }
+
+BasicSelect.propTypes = {
+  timezone: PropTypes.any.isRequired,
+  handleChange: PropTypes.func.isRequired,
+};
+
+export default BasicSelect;
