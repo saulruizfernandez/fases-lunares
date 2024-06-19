@@ -20,10 +20,7 @@ import BasicTimePicker from "./BasicTimePicker";
 import TextField from "@mui/material/TextField";
 import BasicSelect from "./BasicSelect";
 
-import AccessTimeIcon from "@mui/icons-material/AccessTime";
-import EventIcon from "@mui/icons-material/Event";
-import LocationOnIcon from "@mui/icons-material/LocationOn";
-import PublicIcon from "@mui/icons-material/Public";
+import dayjs from "dayjs";
 
 //ASK FOR USER CURRENT LOCATION
 let latitude = 0;
@@ -37,6 +34,7 @@ navigator.geolocation.getCurrentPosition(function (position) {
 
 function SidePanel() {
   const [dateOpen, setDateOpen] = React.useState(false);
+  const [actualDate, setActualDate] = React.useState(dayjs());
 
   const handlerDateClickOpen = () => {
     setDateOpen(true);
@@ -44,6 +42,10 @@ function SidePanel() {
 
   const handlerDateClose = () => {
     setDateOpen(false);
+  };
+
+  const handlerDateChange = (newActualDate) => {
+    setActualDate(newActualDate);
   };
 
   const [timeOpen, setTimeOpen] = React.useState(false);
@@ -141,7 +143,7 @@ function SidePanel() {
         <DialogContent>
           Select a date by clicking on the date-picker
           <Box display="flex" justifyContent="center" alignItems="center">
-            <BasicDatePicker />
+            <BasicDatePicker value={actualDate} onChange={handlerDateChange} />
           </Box>
         </DialogContent>
         <DialogActions>
@@ -174,7 +176,7 @@ function SidePanel() {
             id="name"
             name="lat"
             label="Latitude (e.g. -23.5738º)"
-            type="email"
+            type="number"
             fullWidth
             variant="standard"
             value={latitude}
@@ -186,7 +188,7 @@ function SidePanel() {
             id="name"
             name="lon"
             label="Longitude (e.g. 175.2275º)"
-            type="email"
+            type="number"
             fullWidth
             variant="standard"
             value={longitude}
