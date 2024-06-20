@@ -53,6 +53,7 @@ function SidePanel() {
 
   // TIME PICKER
   const [timeOpen, setTimeOpen] = React.useState(false);
+  const [time, setTime] = React.useState(dayjs());
 
   const handlerTimeClickOpen = () => {
     setTimeOpen(true);
@@ -62,8 +63,14 @@ function SidePanel() {
     setTimeOpen(false);
   };
 
+  const handlerTimeChange = (newTime) => {
+    setTime(newTime);
+  };
+
   // SELECT LOCATION
   const [locOpen, setLocOpen] = React.useState(false);
+  const [longitudeState, setLongitudeState] = React.useState(longitude);
+  const [latitudeState, setLatitudeState] = React.useState(latitude);
 
   const handlerLocClickOpen = () => {
     setLocOpen(true);
@@ -73,11 +80,17 @@ function SidePanel() {
     setLocOpen(false);
   };
 
+  const handleLongitudeChange = (event) => {
+    setLongitudeState(event.target.value);
+  };
+
+  const handleLatitudeChange = (event) => {
+    setLatitudeState(event.target.value);
+  };
+
   // SELECT TIMEZONE
   const [zoneOpen, setZoneOpen] = React.useState(false);
   const [timeZone, setTimeZone] = React.useState(moment.tz.guess());
-  console.log("holi");
-  console.log(timeZone);
 
   const handlerZoneClickOpen = () => {
     setZoneOpen(true);
@@ -169,7 +182,7 @@ function SidePanel() {
         <DialogContent>
           Select a time by clicking on the time-picker
           <Box display="flex" justifyContent="center" alignItems="center">
-            <BasicTimePicker />
+            <BasicTimePicker value={time} onChange={handlerTimeChange} />
           </Box>
         </DialogContent>
         <DialogActions>
@@ -189,10 +202,11 @@ function SidePanel() {
             id="name"
             name="lat"
             label="Latitude (e.g. -23.5738º)"
-            type="number"
+            type="email"
             fullWidth
             variant="standard"
-            value={latitude}
+            value={latitudeState}
+            onChange={handleLatitudeChange}
           />
           <TextField
             autoFocus
@@ -201,10 +215,11 @@ function SidePanel() {
             id="name"
             name="lon"
             label="Longitude (e.g. 175.2275º)"
-            type="number"
+            type="email"
             fullWidth
             variant="standard"
-            value={longitude}
+            value={longitudeState}
+            onChange={handleLongitudeChange}
           />
         </DialogContent>
         <DialogActions>
