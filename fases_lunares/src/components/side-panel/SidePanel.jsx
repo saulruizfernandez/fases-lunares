@@ -20,15 +20,24 @@ import BasicTimePicker from "./BasicTimePicker";
 import TextField from "@mui/material/TextField";
 import BasicSelect from "./BasicSelect";
 
-import dayjs from "dayjs";
 import moment from "moment-timezone";
 
 import { useAppContext } from "../../AppContext.jsx";
 
 function SidePanel() {
+  const {
+    latitudeState,
+    longitudeState,
+    actualDate,
+    time,
+    setLongitudeState,
+    setLatitudeState,
+    setActualDate,
+    setTime,
+  } = useAppContext();
+
   // DATE PICKER
   const [dateOpen, setDateOpen] = React.useState(false);
-  const [actualDate, setActualDate] = React.useState(dayjs());
 
   const handlerDateClickOpen = () => {
     setDateOpen(true);
@@ -44,7 +53,6 @@ function SidePanel() {
 
   // TIME PICKER
   const [timeOpen, setTimeOpen] = React.useState(false);
-  const [time, setTime] = React.useState(dayjs());
 
   const handlerTimeClickOpen = () => {
     setTimeOpen(true);
@@ -56,12 +64,14 @@ function SidePanel() {
 
   const handlerTimeChange = (newTime) => {
     setTime(newTime);
+    const hours = newTime.hour();
+    const minutes = newTime.minute();
+    const updatedDate = actualDate.hour(hours).minute(minutes);
+    setActualDate(updatedDate);
   };
 
   // SELECT LOCATION
   const [locOpen, setLocOpen] = React.useState(false);
-  const { latitudeState, longitudeState, setLongitudeState, setLatitudeState } =
-    useAppContext();
 
   const handlerLocClickOpen = () => {
     setLocOpen(true);

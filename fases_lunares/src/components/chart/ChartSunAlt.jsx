@@ -3,12 +3,12 @@ import SunCalc from "suncalc";
 import { useAppContext } from "../../AppContext";
 
 export default function ChartSunAlt() {
-  const { latitudeState, longitudeState } = useAppContext();
+  const { latitudeState, longitudeState, actualDate } = useAppContext();
 
   // Calculations for sun altitude in all the day
   let sun_alt = [];
 
-  let date_prov = new Date();
+  let date_prov = actualDate.toDate();
   date_prov.setHours(1, 0, 0, 0);
 
   for (let i = 0; i < 24; ++i) {
@@ -16,7 +16,7 @@ export default function ChartSunAlt() {
     date_prov.setHours(date_prov.getHours() + 1);
   }
 
-  let date_ahora = new Date();
+  let date_ahora = actualDate.toDate();
   date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
   let sol_ahora = SunCalc.getPosition(
     date_ahora,

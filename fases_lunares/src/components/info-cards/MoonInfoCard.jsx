@@ -4,11 +4,21 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import SunCalc from "suncalc";
-
-let moonProps = SunCalc.getMoonTimes(new Date(), 31.0, 28.1);
-let moonPos = SunCalc.getMoonPosition(new Date(), 31.0, 28.1);
+import { useAppContext } from "../../AppContext";
 
 export default function MoonInfoCard() {
+  const { latitudeState, longitudeState, actualDate } = useAppContext();
+  let moonProps = SunCalc.getMoonTimes(
+    actualDate.toDate(),
+    latitudeState,
+    longitudeState
+  );
+  let moonPos = SunCalc.getMoonPosition(
+    actualDate.toDate(),
+    latitudeState,
+    longitudeState
+  );
+
   return (
     <Card>
       <CardActionArea

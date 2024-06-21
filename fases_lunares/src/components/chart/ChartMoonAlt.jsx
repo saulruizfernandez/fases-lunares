@@ -3,7 +3,7 @@ import SunCalc from "suncalc";
 import { useAppContext } from "../../AppContext";
 
 export default function ChartMoonAlt() {
-  const { latitudeState, longitudeState } = useAppContext();
+  const { latitudeState, longitudeState, actualDate } = useAppContext();
 
   // Calculations for moon altitude in all the day
   let moon_alt = [];
@@ -18,7 +18,7 @@ export default function ChartMoonAlt() {
     date_prov.setHours(date_prov.getHours() + 1);
   }
 
-  let date_ahora = new Date();
+  let date_ahora = actualDate.toDate();
   date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
   let moon_ahora = SunCalc.getMoonPosition(
     date_ahora,

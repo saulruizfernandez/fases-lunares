@@ -4,11 +4,13 @@ import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 import { CardActionArea } from "@mui/material";
 import SunCalc from "suncalc";
-
-let sunProps = SunCalc.getTimes(new Date(), 31.0, 28.1);
-let sunPos = SunCalc.getPosition(new Date(), 31.0, 28.1);
+import { useAppContext } from "../../AppContext";
 
 export default function SunInfoCard() {
+  const { latitudeState, longitudeState, actualDate } = useAppContext();
+  let sunProps = SunCalc.getTimes(actualDate.toDate(), latitudeState, longitudeState);
+  let sunPos = SunCalc.getPosition(actualDate.toDate(), latitudeState, longitudeState);
+
   return (
     <Card>
       <CardActionArea
