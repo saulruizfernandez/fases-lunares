@@ -1,22 +1,29 @@
 import { LineChart } from "@mui/x-charts/LineChart";
 import SunCalc from "suncalc";
-
-// Calculations for sun altitude in all the day
-let sun_alt = [];
-
-let date_prov = new Date();
-date_prov.setHours(1, 0, 0, 0);
-
-for (let i = 0; i < 24; ++i) {
-  sun_alt.push(SunCalc.getPosition(date_prov, 31.0, 28.1));
-  date_prov.setHours(date_prov.getHours() + 1);
-}
-
-let date_ahora = new Date();
-date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
-let sol_ahora = SunCalc.getPosition(date_ahora, 31.0, 28.1);
+import { useAppContext } from "../../AppContext";
 
 export default function ChartSunAlt() {
+  const { latitudeState, longitudeState } = useAppContext();
+
+  // Calculations for sun altitude in all the day
+  let sun_alt = [];
+
+  let date_prov = new Date();
+  date_prov.setHours(1, 0, 0, 0);
+
+  for (let i = 0; i < 24; ++i) {
+    sun_alt.push(SunCalc.getPosition(date_prov, latitudeState, longitudeState));
+    date_prov.setHours(date_prov.getHours() + 1);
+  }
+
+  let date_ahora = new Date();
+  date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
+  let sol_ahora = SunCalc.getPosition(
+    date_ahora,
+    latitudeState,
+    longitudeState
+  );
+
   return (
     <LineChart
       xAxis={[

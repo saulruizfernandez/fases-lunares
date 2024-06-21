@@ -21,18 +21,9 @@ import TextField from "@mui/material/TextField";
 import BasicSelect from "./BasicSelect";
 
 import dayjs from "dayjs";
-
 import moment from "moment-timezone";
 
-//ASK FOR USER CURRENT LOCATION
-let latitude = 0;
-let longitude = 0;
-
-// Get user's current location
-navigator.geolocation.getCurrentPosition(function (position) {
-  latitude = position.coords.latitude.toFixed(4);
-  longitude = position.coords.longitude.toFixed(4);
-});
+import { useAppContext } from "../../AppContext.jsx";
 
 function SidePanel() {
   // DATE PICKER
@@ -69,8 +60,8 @@ function SidePanel() {
 
   // SELECT LOCATION
   const [locOpen, setLocOpen] = React.useState(false);
-  const [longitudeState, setLongitudeState] = React.useState(longitude);
-  const [latitudeState, setLatitudeState] = React.useState(latitude);
+  const { latitudeState, longitudeState, setLongitudeState, setLatitudeState } =
+    useAppContext();
 
   const handlerLocClickOpen = () => {
     setLocOpen(true);

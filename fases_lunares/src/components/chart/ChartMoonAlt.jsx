@@ -1,22 +1,31 @@
 import { LineChart } from "@mui/x-charts/LineChart";
 import SunCalc from "suncalc";
-
-// Calculations for moon altitude in all the day
-let moon_alt = [];
-
-let date_prov = new Date();
-date_prov.setHours(1, 0, 0, 0);
-
-for (let i = 0; i < 24; ++i) {
-  moon_alt.push(SunCalc.getMoonPosition(date_prov, 31.0, 28.1));
-  date_prov.setHours(date_prov.getHours() + 1);
-}
-
-let date_ahora = new Date();
-date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
-let moon_ahora = SunCalc.getMoonPosition(date_ahora, 31.0, 28.1);
+import { useAppContext } from "../../AppContext";
 
 export default function ChartMoonAlt() {
+  const { latitudeState, longitudeState } = useAppContext();
+
+  // Calculations for moon altitude in all the day
+  let moon_alt = [];
+
+  let date_prov = new Date();
+  date_prov.setHours(1, 0, 0, 0);
+
+  for (let i = 0; i < 24; ++i) {
+    moon_alt.push(
+      SunCalc.getMoonPosition(date_prov, latitudeState, longitudeState)
+    );
+    date_prov.setHours(date_prov.getHours() + 1);
+  }
+
+  let date_ahora = new Date();
+  date_ahora.setHours(date_ahora.getHours(), 0, 0, 0);
+  let moon_ahora = SunCalc.getMoonPosition(
+    date_ahora,
+    latitudeState,
+    longitudeState
+  );
+
   return (
     <LineChart
       xAxis={[
