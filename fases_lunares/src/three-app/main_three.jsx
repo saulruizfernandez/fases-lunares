@@ -8,8 +8,10 @@ import {
   LensflareElement,
 } from "three/examples/jsm/objects/Lensflare";
 import { getFlagAcceleration } from "./variables.js";
+import { useAppContext } from "../AppContext.jsx";
 
 function ThreeComponent() {
+  const { actualDate, setActualDate } = useAppContext();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -143,22 +145,22 @@ function ThreeComponent() {
     const axesHelper = new THREE.AxesHelper(5);
     scene.add(axesHelper);
 
-    let timeScale = 10000;
-    let startTime = Date.now();
-    let acceleratedTime = new Date();
+    let oneTime = true;
+    let auxiliaryDate = new Date();
 
-    function animate() {
+    const animate = () => {
       requestAnimationFrame(animate);
 
       // TIME ACCELERATION
       if (getFlagAcceleration()) {
-        let timeElapsed = (Date.now() - startTime) / 1000 / 60 / 60;
-        acceleratedTime = new Date(
-          startTime + timeElapsed * timeScale * 60 * 60 * 1000
-        );
+        if (oneTime) {
+          oneTime = false;
+          auxiliaryDate = actualDate.toDate();
+        }
+        auxiliaryDate.setSeconds(auxiliaryDate.getSeconds() + 10);
       }
 
-      var moon_position = SunCalc.getMoonPosition(acceleratedTime, 89.9999, 0);
+      var moon_position = SunCalc.getMoonPosition(auxiliaryDate, 89.9999, 0);
       var new_position_moon = get_position(
         moon_position.altitude,
         moon_position.azimuth,
@@ -170,6 +172,7 @@ function ThreeComponent() {
           new_position_moon.y,
           new_position_moon.z
         );
+        // moon.rotation.y += 0.01;
         moon.lookAt(new THREE.Vector3(0, 0, 0));
         auxCamera.fov = 2.5;
 
@@ -193,7 +196,7 @@ function ThreeComponent() {
         auxCamera.lookAt(moon.position);
       }
 
-      var sun_position = SunCalc.getPosition(acceleratedTime, 89.9999, 0);
+      var sun_position = SunCalc.getPosition(auxiliaryDate, 89.9999, 0);
       var new_position_sun = get_position(
         sun_position.altitude,
         sun_position.azimuth,
@@ -239,14 +242,15 @@ function ThreeComponent() {
         ref.current.clientHeight
       );
 
-      var moonIllumination = SunCalc.getMoonIllumination(acceleratedTime);
+      var moonIllumination = SunCalc.getMoonIllumination(auxiliaryDate);
       // var moonPhase = moonIllumination.phase;
       var moonFraction = moonIllumination.fraction;
 
       document.getElementById("moon-info").textContent = `${(
         moonFraction * 100
       ).toFixed(2)}%`;
-    }
+    };
+
     animate();
 
     // Cleanup
@@ -254,7 +258,7 @@ function ThreeComponent() {
       window.removeEventListener("resize", handleResize);
       ref.current.removeChild(renderer.domElement);
     };
-  }, []);
+  }, [actualDate, setActualDate]);
 
   return (
     <div

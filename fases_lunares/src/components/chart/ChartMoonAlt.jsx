@@ -8,7 +8,7 @@ export default function ChartMoonAlt() {
   // Calculations for moon altitude in all the day
   let moon_alt = [];
 
-  let date_prov = new Date();
+  let date_prov = actualDate.toDate();
   date_prov.setHours(1, 0, 0, 0);
 
   for (let i = 0; i < 24; ++i) {

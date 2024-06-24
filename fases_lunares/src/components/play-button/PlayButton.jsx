@@ -22,10 +22,10 @@ function PlayButton() {
       disableRipple
       sx={stylePlayButton}
       variant="contained"
-      endIcon={isClicked ? <StopIcon /> : <PlayArrowIcon />} // Cambia el icono dependiendo del estado
+      endIcon={isClicked ? <StopIcon /> : <PlayArrowIcon />}
       onClick={() => {
         changeFlagAcceleration(!getFlagAcceleration());
-        setIsClicked(!isClicked); // Cambia el estado cuando se hace clic en el botón
+        setIsClicked(!isClicked);
       }}
     >
       {isClicked ? "STOP" : "PLAY"}{" "}
