@@ -6,8 +6,12 @@ import {
   changeFlagAcceleration,
   getFlagAcceleration,
 } from "../../three-app/variables";
+import { auxiliaryDate } from "../../three-app/main_three";
+import { useAppContext } from "../../AppContext";
+import dayjs from "dayjs";
 
 function PlayButton() {
+  const { setActualDate } = useAppContext();
   const [isClicked, setIsClicked] = useState(false);
 
   const stylePlayButton = {
@@ -26,6 +30,9 @@ function PlayButton() {
       onClick={() => {
         changeFlagAcceleration(!getFlagAcceleration());
         setIsClicked(!isClicked);
+        if (!getFlagAcceleration()) {
+          setActualDate(dayjs(auxiliaryDate));
+        }
       }}
     >
       {isClicked ? "STOP" : "PLAY"}{" "}

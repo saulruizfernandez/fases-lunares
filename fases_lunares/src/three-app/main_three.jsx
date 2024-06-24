@@ -10,6 +10,8 @@ import {
 import { getFlagAcceleration } from "./variables.js";
 import { useAppContext } from "../AppContext.jsx";
 
+let auxiliaryDate = new Date();
+
 function ThreeComponent() {
   const { actualDate, setActualDate } = useAppContext();
   const ref = useRef(null);
@@ -146,7 +148,6 @@ function ThreeComponent() {
     scene.add(axesHelper);
 
     let oneTime = true;
-    let auxiliaryDate = new Date();
 
     const animate = () => {
       requestAnimationFrame(animate);
@@ -157,7 +158,7 @@ function ThreeComponent() {
           oneTime = false;
           auxiliaryDate = actualDate.toDate();
         }
-        auxiliaryDate.setSeconds(auxiliaryDate.getSeconds() + 10);
+        auxiliaryDate.setMinutes(auxiliaryDate.getMinutes() + 5);
       }
 
       var moon_position = SunCalc.getMoonPosition(auxiliaryDate, 89.9999, 0);
@@ -279,5 +280,5 @@ function ThreeComponent() {
     </div>
   );
 }
-
 export default ThreeComponent;
+export { auxiliaryDate };
