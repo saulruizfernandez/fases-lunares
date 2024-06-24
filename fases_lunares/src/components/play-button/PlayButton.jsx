@@ -11,7 +11,7 @@ import { useAppContext } from "../../AppContext";
 import dayjs from "dayjs";
 
 function PlayButton() {
-  const { setActualDate } = useAppContext();
+  const { setActualDate, setTime } = useAppContext();
   const [isClicked, setIsClicked] = useState(false);
 
   const stylePlayButton = {
@@ -32,6 +32,7 @@ function PlayButton() {
         setIsClicked(!isClicked);
         if (!getFlagAcceleration()) {
           setActualDate(dayjs(auxiliaryDate));
+          setTime(dayjs(auxiliaryDate));
         }
       }}
     >

@@ -158,7 +158,7 @@ function ThreeComponent() {
           oneTime = false;
           auxiliaryDate = actualDate.toDate();
         }
-        auxiliaryDate.setMinutes(auxiliaryDate.getMinutes() + 5);
+        auxiliaryDate.setMinutes(auxiliaryDate.getMinutes() + 3);
       }
 
       var moon_position = SunCalc.getMoonPosition(auxiliaryDate, 89.9999, 0);
