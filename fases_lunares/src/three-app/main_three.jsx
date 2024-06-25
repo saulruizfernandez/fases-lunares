@@ -13,7 +13,7 @@ import { useAppContext } from "../AppContext.jsx";
 let auxiliaryDate = new Date();
 
 function ThreeComponent() {
-  const { actualDate, setActualDate } = useAppContext();
+  const { actualDate, setActualDate, speed } = useAppContext();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -158,7 +158,8 @@ function ThreeComponent() {
           oneTime = false;
           auxiliaryDate = actualDate.toDate();
         }
-        auxiliaryDate.setMinutes(auxiliaryDate.getMinutes() + 3);
+        auxiliaryDate.setMinutes(auxiliaryDate.getMinutes() + speed);
+        console.log(speed);
       }
 
       var moon_position = SunCalc.getMoonPosition(auxiliaryDate, 89.9999, 0);
@@ -259,7 +260,7 @@ function ThreeComponent() {
       window.removeEventListener("resize", handleResize);
       ref.current.removeChild(renderer.domElement);
     };
-  }, [actualDate, setActualDate]);
+  }, [actualDate, setActualDate, speed]);
 
   return (
     <div

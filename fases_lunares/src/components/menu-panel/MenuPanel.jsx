@@ -16,6 +16,8 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 
 import { ListItemIcon } from "@mui/material";
+
+import MoonIcon from "@mui/icons-material/Brightness3";
 import GitHubIcon from "@mui/icons-material/GitHub";
 import InfoIcon from "@mui/icons-material/Info";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
@@ -26,6 +28,12 @@ const navItems = [
   { text: "Mail", icon: <InfoIcon /> },
   { text: "Inbox", icon: <PermContactCalendarIcon /> },
 ];
+
+const handleGitHubClick = () => {
+  if (typeof window !== "undefined") {
+    window.location.href = 'https://github.com/tuUsuario';
+  }
+};
 
 function DrawerAppBar(props) {
   const { window } = props;
@@ -71,6 +79,7 @@ function DrawerAppBar(props) {
           >
             <MenuIcon />
           </IconButton>
+          <MoonIcon sx={{ mr: 1, display: { xs: "none", sm: "block" } }} />
           <Typography
             variant="h6"
             component="div"
@@ -80,7 +89,11 @@ function DrawerAppBar(props) {
           </Typography>
           <Box sx={{ display: { xs: "none", sm: "block" } }}>
             {navItems.map((item) => (
-              <Button key={item.text} sx={{ color: "#fff" }}>
+              <Button
+                key={item.text}
+                sx={{ color: "#fff" }}
+                onClick={item.text === "GitHub" ? handleGitHubClick : null}
+              >
                 {item.icon}
               </Button>
             ))}

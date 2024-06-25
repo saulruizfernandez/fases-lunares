@@ -12,6 +12,7 @@ export const AppProvider = ({ children }) => {
   const [latitudeState, setLatitudeState] = useState(0);
   const [actualDate, setActualDate] = useState(dayjs());
   const [time, setTime] = useState(dayjs());
+  const [speed, setSpeed] = useState(3);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(function (position) {
@@ -28,7 +29,9 @@ export const AppProvider = ({ children }) => {
     actualDate,
     setActualDate,
     time,
-    setTime
+    setTime,
+    speed,
+    setSpeed,
   };
 
   return <AppContext.Provider value={value}>{children}</AppContext.Provider>;

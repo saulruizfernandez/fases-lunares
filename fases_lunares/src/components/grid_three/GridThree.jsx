@@ -5,8 +5,16 @@ import ChartSunAlt from "../chart/ChartSunAlt";
 import MoonInfoCard from "../info-cards/MoonInfoCard";
 import SunInfoCard from "../info-cards/SunInfoCard";
 import ThreeComponent from "../../three-app/main_three";
+import VelSlider from "../vel-slider/VelSlider";
+import { useAppContext } from "../../AppContext";
 
 function GridThree() {
+  const { speed, setSpeed } = useAppContext();
+
+  const handleChange = (event, newValue) => {
+    setSpeed(newValue);
+  };
+
   return (
     <Grid container height="100%" spacing={2}>
       <Grid
@@ -29,7 +37,14 @@ function GridThree() {
           <SunInfoCard />
         </Grid>
         <Grid item>
-          <PlayButton />
+          <Grid container direction="row" justifyContent="center" spacing={6}>
+            <Grid item>
+              <PlayButton />
+            </Grid>
+            <Grid item>
+              <VelSlider value={speed} onChange={handleChange} />
+            </Grid>
+          </Grid>
         </Grid>
       </Grid>
       <Grid
