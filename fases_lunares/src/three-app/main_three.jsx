@@ -13,7 +13,8 @@ import { useAppContext } from "../AppContext.jsx";
 let auxiliaryDate = new Date();
 
 function ThreeComponent() {
-  const { actualDate, setActualDate, speed } = useAppContext();
+  const { actualDate, setActualDate, speed, latitudeState, longitudeState } =
+    useAppContext();
   const ref = useRef(null);
 
   useEffect(() => {
@@ -143,9 +144,9 @@ function ThreeComponent() {
       return position;
     }
 
-    // PLOT AXIS
-    const axesHelper = new THREE.AxesHelper(5);
-    scene.add(axesHelper);
+    // INFO TEXT
+    document.getElementById("texto-informativo").textContent =
+      `${actualDate}, ${latitudeState}, ${longitudeState}`;
 
     let oneTime = true;
 
@@ -260,7 +261,7 @@ function ThreeComponent() {
       window.removeEventListener("resize", handleResize);
       ref.current.removeChild(renderer.domElement);
     };
-  }, [actualDate, setActualDate, speed]);
+  }, [actualDate, setActualDate, speed, latitudeState, longitudeState]);
 
   return (
     <div
@@ -277,7 +278,17 @@ function ThreeComponent() {
           fontSize: "30px",
           fontWeight: "bold",
         }}
-      ></div>
+      />
+      <div
+        id="texto-informativo"
+        style={{
+          position: "absolute",
+          bottom: "2%",
+          left: "2%",
+          color: "white",
+          fontsize: "30px",
+        }}
+      />
     </div>
   );
 }

@@ -22,25 +22,52 @@ import GitHubIcon from "@mui/icons-material/GitHub";
 import InfoIcon from "@mui/icons-material/Info";
 import PermContactCalendarIcon from "@mui/icons-material/PermContactCalendar";
 
+import Dialog from "@mui/material/Dialog";
+import DialogActions from "@mui/material/DialogActions";
+import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
+import DialogTitle from "@mui/material/DialogTitle";
+
 const drawerWidth = 240;
 const navItems = [
   { text: "GitHub", icon: <GitHubIcon /> },
-  { text: "Mail", icon: <InfoIcon /> },
-  { text: "Inbox", icon: <PermContactCalendarIcon /> },
+  { text: "Info", icon: <InfoIcon /> },
+  { text: "Contact", icon: <PermContactCalendarIcon /> },
 ];
 
 const handleGitHubClick = () => {
   if (typeof window !== "undefined") {
-    window.location.href = 'https://github.com/tuUsuario';
+    window.location.href = "https://github.com/tuUsuario";
   }
 };
 
 function DrawerAppBar(props) {
   const { window } = props;
   const [mobileOpen, setMobileOpen] = React.useState(false);
+  const [isHelpInfoOpen, setIsHelpInfoOpen] = React.useState(false);
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
+  };
+
+  const handleInfoClick = () => {
+    setIsHelpInfoOpen(true);
+  };
+  const handleCloseHelpInfo = () => {
+    setIsHelpInfoOpen(false);
+  };
+
+  const handleButtonClick = (itemText) => {
+    switch (itemText) {
+      case "GitHub":
+        handleGitHubClick();
+        break;
+      case "Info":
+        handleInfoClick();
+        break;
+      case "Contact":
+        break;
+    }
   };
 
   const drawer = (
@@ -66,61 +93,86 @@ function DrawerAppBar(props) {
     window !== undefined ? () => window().document.body : undefined;
 
   return (
-    <Box sx={{ display: "flex", zIndex: 2 }}>
-      <CssBaseline />
-      <AppBar component="nav">
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: "none" } }}
+    <div>
+      <Box sx={{ display: "flex", zIndex: 2 }}>
+        <CssBaseline />
+        <AppBar component="nav">
+          <Toolbar>
+            <IconButton
+              color="inherit"
+              aria-label="open drawer"
+              edge="start"
+              onClick={handleDrawerToggle}
+              sx={{ mr: 2, display: { sm: "none" } }}
+            >
+              <MenuIcon />
+            </IconButton>
+            <MoonIcon sx={{ mr: 1, display: { xs: "none", sm: "block" } }} />
+            <Typography
+              variant="h6"
+              component="div"
+              sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
+            >
+              Lunar Phases Visualizer
+            </Typography>
+            <Box sx={{ display: { xs: "none", sm: "block" } }}>
+              {navItems.map((item) => (
+                <Button
+                  key={item.text}
+                  sx={{ color: "#fff" }}
+                  onClick={() => handleButtonClick(item.text)}
+                >
+                  {item.icon}
+                </Button>
+              ))}
+            </Box>
+          </Toolbar>
+        </AppBar>
+        <nav>
+          <Drawer
+            container={container}
+            variant="temporary"
+            open={mobileOpen}
+            onClose={handleDrawerToggle}
+            ModalProps={{
+              keepMounted: true, // Better open performance on mobile.
+            }}
+            sx={{
+              display: { xs: "block", sm: "none" },
+              "& .MuiDrawer-paper": {
+                boxSizing: "border-box",
+                width: drawerWidth,
+              },
+            }}
           >
-            <MenuIcon />
-          </IconButton>
-          <MoonIcon sx={{ mr: 1, display: { xs: "none", sm: "block" } }} />
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{ flexGrow: 1, display: { xs: "none", sm: "block" } }}
-          >
-            Lunar Phases Visualizer
-          </Typography>
-          <Box sx={{ display: { xs: "none", sm: "block" } }}>
-            {navItems.map((item) => (
-              <Button
-                key={item.text}
-                sx={{ color: "#fff" }}
-                onClick={item.text === "GitHub" ? handleGitHubClick : null}
-              >
-                {item.icon}
-              </Button>
-            ))}
-          </Box>
-        </Toolbar>
-      </AppBar>
-      <nav>
-        <Drawer
-          container={container}
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true, // Better open performance on mobile.
-          }}
-          sx={{
-            display: { xs: "block", sm: "none" },
-            "& .MuiDrawer-paper": {
-              boxSizing: "border-box",
-              width: drawerWidth,
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-      </nav>
-    </Box>
+            {drawer}
+          </Drawer>
+        </nav>
+      </Box>
+      <Button variant="outlined" onClick={handleInfoClick}>
+        Slide in alert dialog
+      </Button>
+      <Dialog
+        open={isHelpInfoOpen}
+        keepMounted
+        onClose={handleCloseHelpInfo}
+        aria-describedby="alert-dialog-slide-description"
+      >
+        <DialogTitle>{"How to use the app?"}</DialogTitle>
+        <DialogContent>
+          <DialogContentText id="alert-dialog-slide-description">
+            {`Lunar Phases Visualizer is an app to check real-time positions of the Moon and the Sun.
+            The following picture shows the sections of the UI:\n
+            The navigator will ask for permission to access your geographical coordinates. Click accept.
+            Do not worry if there is any problem while accessing the data, you can modify it from the
+            side panel at any time!`}
+          </DialogContentText>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseHelpInfo}>CLOSE</Button>
+        </DialogActions>
+      </Dialog>
+    </div>
   );
 }
 

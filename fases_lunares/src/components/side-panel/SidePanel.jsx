@@ -5,6 +5,7 @@ import List from "@mui/material/List";
 import Divider from "@mui/material/Divider";
 import ListItem from "@mui/material/ListItem";
 import Button from "@mui/material/Button";
+import { Stack } from "@mui/material";
 import { sidepanelitems } from "./consts/sidepanelitems";
 import { Box } from "@mui/material";
 import { Fragment } from "react";
@@ -23,6 +24,9 @@ import BasicSelect from "./BasicSelect";
 import moment from "moment-timezone";
 
 import { useAppContext } from "../../AppContext.jsx";
+
+import CloseIcon from "@mui/icons-material/Close";
+import SendIcon from '@mui/icons-material/Send';
 
 function SidePanel() {
   const {
@@ -240,6 +244,23 @@ function SidePanel() {
       </Dialog>
 
       <Divider sx={{ backgroundColor: "white", height: "3px" }} />
+      <Stack
+        spacing={1}
+        sx={{ marginTop: "auto", padding: 2, color: "darkgray" }}
+      >
+        <Button
+          startIcon={<SendIcon />}
+          sx={{ justifyContent: "flex-start", color: "gray", textTransform: "none" }}
+        >
+          Report bug
+        </Button>
+        <Button
+          startIcon={<CloseIcon />}
+          sx={{ justifyContent: "flex-start", color: "gray", textTransform: "none" }}
+        >
+          Close
+        </Button>
+      </Stack>
     </Drawer>
   );
 }
